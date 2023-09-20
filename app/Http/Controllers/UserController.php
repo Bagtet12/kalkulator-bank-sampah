@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Sampah;
 use App\Models\Transaksi;
+use App\Models\User;
+use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
 {
@@ -16,7 +18,7 @@ class UserController extends Controller
     public function index()
     {
         $sampah = Sampah::all();
-        return redirect()->route('user.index', compact('sampah'));
+        return view('pages.user.index', compact('sampah'));
     }
 
     public function prosesPemilihanSampah(Request $request)
@@ -28,7 +30,7 @@ class UserController extends Controller
             ]);
 
             if (!$validation) {
-                return redirect()->route('user.index')->withErrors($validation)->withInput();
+                return view('pages.user.index')->with('Validation Error');
             }
 
             $jenisSampah = Sampah::findOrFail($request->nama);
@@ -49,9 +51,22 @@ class UserController extends Controller
         }
     }
 
-    public function dashboard()
+    public function dashboard($id)
     {
-        $transaksi = Transaksi::all();
-        return view('pages.user.dashboard', compact('transaksi'));
+        $user = User::findOrFail($id);
+        $dateNow = date('Y-m-d H:i:s');
+        
+        $transaksi = DB::select('SELECT s.nama, t.verifikasi, t.total_harga, t.jumlah_kg, t.created_at
+        FROM transaksi as t
+        JOIN sampah as s ON s.id = t.sampah_id
+        WHERE t.user_id = ' .$user->id.' ');
+
+        $verifiedTransaksi = DB::select('SELECT s.nama, t.verifikasi, SUM(t.total_harga) as harga, t.jumlah_kg
+        FROM transaksi as t
+        JOIN sampah as s ON s.id = t.sampah_id
+        WHERE t.user_id = ' .$user->id.' AND t.verifikasi = "Sudah Verifikasi" 
+        GROUP BY s.nama, t.verifikasi, t.total_harga, t.jumlah_kg');
+
+        return view('pages.user.dashboard', compact('transaksi','verifiedTransaksi'));
     }
 }

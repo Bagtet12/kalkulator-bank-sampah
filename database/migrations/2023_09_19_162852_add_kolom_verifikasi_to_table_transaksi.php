@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddRoleToUsersTable extends Migration
+class AddKolomVerifikasiToTableTransaksi extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,8 @@ class AddRoleToUsersTable extends Migration
      */
     public function up()
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->string('role')->default('user');
+        Schema::table('transaksi', function (Blueprint $table) {
+            $table->enum('verifikasi', ['Sudah Verifikasi', 'Belum Verifikasi'])->after('user_id')->default('Belum Verifikasi');
         });
     }
 
@@ -25,7 +25,7 @@ class AddRoleToUsersTable extends Migration
      */
     public function down()
     {
-        Schema::table('users', function (Blueprint $table) {
+        Schema::table('transaksi', function (Blueprint $table) {
             //
         });
     }

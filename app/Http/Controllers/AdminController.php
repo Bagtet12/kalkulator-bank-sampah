@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Sampah;
+use App\Models\Transaksi;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class AdminController extends Controller
@@ -18,6 +20,32 @@ class AdminController extends Controller
         $sampah = Sampah::all();
         return view('pages.admin.index', compact('sampah'));
     }
+
+    public function transaksi()
+    {
+        $transaksi = DB::select("SELECT t.id as transaksi_id, t.jumlah_kg as kg, t.total_harga as harga, t.verifikasi as verifikasi, s.nama as nama_sampah, s.id as id, u.name as nama_user 
+        FROM transaksi as t
+        JOIN sampah as s ON s.id = t.sampah_id
+        JOIN users as u ON u.id = t.user_id");
+        return view('pages.admin.transaksi', compact('transaksi'));
+    }
+
+    public function verifikasi($id)
+    {
+        $transaksi = Transaksi::findOrFail($id);
+    
+        // Mengubah status verifikasi
+        if ($transaksi->verifikasi == 'Belum Verifikasi') {
+            $transaksi->verifikasi = 'Sudah Verifikasi';
+        } else {
+            $transaksi->verifikasi = 'Belum Verifikasi';
+        }
+    
+        $transaksi->save();
+    
+        return redirect()->back()->with('success', 'Status Verifikasi berhasil diubah.');
+    }
+
 
     /**
      * Show the form for creating a new resource.

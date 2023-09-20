@@ -1,15 +1,21 @@
 <x-app-layout>
+    @section('navbar')
+    @include('layouts.navigation_admin')
+    @endsection
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Daftar Jenis Sampah') }}
+            {{ __('Dashboard') }}
         </h2>
     </x-slot>
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="mt-4 ml-2">
+                    <a href="{{ route('admin.create') }}" class="bg-blue-500 hover:bg-blue-700 text-black font-bold py-2 px-4 rounded mb-4 space-y-4">Tambah Jenis Sampah Baru</a>
+                    <a href="{{ route('admin.transaksi') }}" class="bg-blue-500 hover:bg-blue-700 text-black font-bold py-2 px-4 rounded mb-4 space-y-4">Verifikasi Transkasi</a>
+                </div>
                 <div class="p-6 bg-white border-b border-gray-200">
-                    <a href="{{ route('admin.create') }}" class="bg-blue-500 hover:bg-blue-700 text-black font-bold py-2 px-4 rounded mb-4">Tambah Jenis Sampah Baru</a>
 
                     @if(session('success'))
                     <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">

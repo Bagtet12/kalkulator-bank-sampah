@@ -16,18 +16,23 @@ use App\Http\Controllers\UserController;
 */
 
 
-Route::middleware('auth', 'admin')->group(function () {
+Route::middleware(['auth:admin'])->group(function () {
     Route::get('/admin', [AdminController::class, 'index'])->name('admin.index');
     Route::get('/admin-create', [AdminController::class, 'create'])->name('admin.create');
+    Route::get('/admin-transaksi', [AdminController::class, 'transaksi'])->name('admin.transaksi');
+    Route::post('/admin/verifikasi/{id}', [AdminController::class, 'verifikasi'])->name('admin.verifikasi');
     Route::get('/admin-edit/{id}', [AdminController::class, 'edit'])->name('admin.edit');
     Route::put('/admin-update/{id}', [AdminController::class, 'update'])->name('admin.update');
     Route::post('/admin-store', [AdminController::class, 'store'])->name('admin.store');
     Route::delete('/admin-destroy/{id}', [AdminController::class, 'destroy'])->name('admin.destroy');
 });
-Route::middleware('auth')->group(function () {
+require __DIR__ . '/adminauth.php';
+
+Route::middleware(['auth'])->group(function () {
     Route::get('/', [UserController::class, 'index'])->name('user.index');
     Route::get('/user-hasil', [UserController::class, 'index'])->name('user.hasil');
-    Route::post('/proses-pemilihan-sampah', [UserController::class, 'prosesPemilihanSampah'])->name('proses-pemilihan-sampah');
+    Route::post('/user-proses', [UserController::class, 'prosesPemilihanSampah'])->name('user.proses');
+    Route::get('/user-dashboard/{id}', [UserController::class, 'dashboard'])->name('user.dashboard');
 });
 
 
